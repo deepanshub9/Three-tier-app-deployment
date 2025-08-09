@@ -1,0 +1,53 @@
+{
+  "tasks": [
+    {
+      "_id": "1754769230809jt3bkw8vp",
+      "task": "sssccc",
+      "description": "",
+      "completed": false,
+      "priority": "medium",
+      "category": "other",
+      "dueDate": null,
+      "tags": [],
+      "createdAt": "2025-08-09T19:53:50.809Z",
+      "updatedAt": "2025-08-09T20:01:23.988Z"
+    },
+    {
+      "_id": "1754769237254r0nolygdv",
+      "task": "ssw",
+      "description": "",
+      "completed": false,
+      "priority": "medium",
+      "category": "shopping",
+      "dueDate": null,
+      "tags": [],
+      "createdAt": "2025-08-09T19:53:57.254Z",
+      "updatedAt": "2025-08-09T20:01:23.988Z"
+    },
+    {
+      "_id": "1754769643946f28vujxjx",
+      "task": "health-tracker-rest",
+      "description": "",
+      "completed": false,
+      "priority": "medium",
+      "category": "other",
+      "dueDate": null,
+      "tags": [],
+      "createdAt": "2025-08-09T20:00:43.946Z",
+      "updatedAt": "2025-08-09T20:01:23.988Z"
+    },
+    {
+      "_id": "17547696668854tqh27ggm",
+      "task": "mmmmm",
+      "description": "",
+      "completed": false,
+      "priority": "low",
+      "category": "personal",
+      "dueDate": "2025-08-07T00:00:00.000Z",
+      "tags": [],
+      "createdAt": "2025-08-09T20:01:06.885Z",
+      "updatedAt": "2025-08-09T20:01:23.988Z"
+    }
+  ],
+  "nextId": 1
+}
