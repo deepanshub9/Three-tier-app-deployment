@@ -303,7 +303,6 @@ This project maintains the same license as the original repository.
 
 ## 🙏 Acknowledgments
 
-- Original project by LondheShubham153
 - Enhanced with modern web development best practices
 - Inspired by Material Design principles
 - Community feedback and suggestions
