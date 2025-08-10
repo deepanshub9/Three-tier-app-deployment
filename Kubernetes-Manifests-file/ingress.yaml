@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: backend.amanpathakdevops.study
+    - host: todochallenge.thetechguy.co.in
       http:
         paths:
           - path: /api

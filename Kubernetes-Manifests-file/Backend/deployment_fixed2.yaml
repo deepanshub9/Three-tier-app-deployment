@@ -48,12 +48,6 @@ spec:
             value: mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-svc:27017/todo?authSource=admin&directConnection=true
           - name: NODE_ENV
             value: production
-          - name: USE_MONGODB
-            value: "true"
-          - name: STORAGE_TYPE
-            value: "mongodb"
-          - name: DATABASE_TYPE
-            value: "mongodb"
         ports:
         - containerPort: 3500
         livenessProbe: 

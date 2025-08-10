@@ -40,20 +40,6 @@ spec:
                 key: password
           - name: MONGO_CONN_STR
             value: mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-svc:27017/todo?authSource=admin&directConnection=true
-          - name: MONGODB_URI
-            value: mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-svc:27017/todo?authSource=admin&directConnection=true
-          - name: DATABASE_URL
-            value: mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-svc:27017/todo?authSource=admin&directConnection=true
-          - name: MONGO_URL
-            value: mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@mongodb-svc:27017/todo?authSource=admin&directConnection=true
-          - name: NODE_ENV
-            value: production
-          - name: USE_MONGODB
-            value: "true"
-          - name: STORAGE_TYPE
-            value: "mongodb"
-          - name: DATABASE_TYPE
-            value: "mongodb"
         ports:
         - containerPort: 3500
         livenessProbe: 

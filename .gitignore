@@ -1,67 +1,58 @@
-# Dependencies
+# AWS Files
+awscliv2.zip
+iam_policy.json
+aws/
+*.pem
+*.key
+
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
-# Environment variables
+# Environment Variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Build outputs
-build/
-dist/
-*.tgz
-*.tar.gz
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
 # Logs
 logs
 *.log
 
+# Docker
+.dockerignore
+
+# Kubernetes Secrets
+*secret*.yaml
+*secret*.yml
+
 # Terraform
 *.tfstate
 *.tfstate.*
-*.tfvars
 .terraform/
 .terraform.lock.hcl
-terraform.tfplan
-
-# AWS
-.aws/
+terraform.tfvars
+*.tfvars
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Docker
-.dockerignore
-
-# Kubernetes secrets
-*secret*.yaml
-*secrets*.yaml
+# Build outputs
+build/
+dist/
+out/
 
 # Temporary files
 *.tmp
 *.temp
-nul
