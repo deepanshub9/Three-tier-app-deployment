@@ -1,16 +1,23 @@
-# #TWSThreeTierAppChallenge
+# #ThreeTierApp_Deployment
 
 ## Overview
 
 The challenge involves deploying a Three-Tier Web Application using ReactJS, NodeJS, and MongoDB, with deployment on AWS EKS. Participants are encouraged to deploy the application, add creative enhancements, and submit a Pull Request (PR). Merged PRs will earn exciting prizes!
 
+🎯 **Challenge Difficulty**: Intermediate to Advanced  
+⏱️ **Estimated Time**: 4-6 hours  
+💰 **AWS Cost**: ~$10 for complete setup
+
 <img width="1892" height="884" alt="Image" src="https://github.com/user-attachments/assets/33f8a0e3-e2bc-433c-8cae-406162c35b66" />
 
 ## Prerequisites
 
-- Basic knowledge of Docker, and AWS services.
-- An AWS account with necessary permissions.
+- Basic knowledge of Docker, Kubernetes, and AWS services
+- An AWS account with necessary permissions
+- Terminal/Command line experience
+- Understanding of YAML and basic networking concepts
 
+## 🚀 Quick Start Guide
 ## Challenge Steps
 
 - [Application Code](#application-code)
@@ -18,6 +25,9 @@ The challenge involves deploying a Three-Tier Web Application using ReactJS, Nod
 - [Jenkins Server Terraform](#jenkins-server-terraform)
 - [Kubernetes Manifests Files](#kubernetes-manifests-files)
 - [Project Details](#project-details)
+- [Challenge Levels](#-challenge-levels)
+
+<img width="1907" height="893" alt="Image" src="https://github.com/user-attachments/assets/a8af39a2-9bae-413d-ac68-50e9a205022d" />
 
 ## Application Code
 
@@ -52,6 +62,8 @@ The `Kubernetes-Manifests-Files` directory holds Kubernetes manifests for deploy
 - Private ECR repositories for secure image management
 - Helm charts for efficient monitoring setup
 - GitOps with ArgoCD - the cherry on top!
+
+<img width="1916" height="472" alt="Image" src="https://github.com/user-attachments/assets/b577c529-3f51-4606-abef-ce116c20b7b6" />
 
 📈 **The journey covered everything from setting up tools to deploying a Three-Tier app, ensuring data persistence, and implementing CI/CD pipelines.**
 
@@ -113,12 +125,32 @@ aws eks update-kubeconfig --region us-west-2 --name three-tier-cluster
 kubectl get nodes
 ```
 
-### Step 8: Run Manifests
+### Step 8: Deploy Application
 
 ```shell
-kubectl create namespace workshop
-kubectl apply -f .
-kubectl delete -f .
+# Create namespace
+kubectl create namespace three-tier
+
+# Navigate to manifests directory
+cd Kubernetes-Manifests-file
+
+# Deploy MongoDB
+kubectl apply -f Database/
+
+# Create MongoDB secret
+kubectl create secret generic mongo-sec \
+  --from-literal=username=admin \
+  --from-literal=password=password123 \
+  -n three-tier
+
+# Deploy Backend API
+kubectl apply -f Backend/
+
+# Deploy Frontend
+kubectl apply -f Frontend/
+
+# Verify deployments
+kubectl get all -n three-tier
 ```
 
 ### Step 9: Install AWS Load Balancer
@@ -133,12 +165,154 @@ eksctl create iamserviceaccount --cluster=three-tier-cluster --namespace=kube-sy
 ### Step 10: Deploy AWS Load Balancer Controller
 
 ```shell
+# Install Helm
 sudo snap install helm --classic
+
+# Add EKS Helm repository
 helm repo add eks https://aws.github.io/eks-charts
 helm repo update eks
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=my-cluster --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+
+# Install AWS Load Balancer Controller
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=three-tier-cluster \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+
+# Verify controller deployment
 kubectl get deployment -n kube-system aws-load-balancer-controller
-kubectl apply -f full_stack_lb.yaml
+
+# Deploy Ingress
+kubectl apply -f ingress.yaml
+
+# Check ingress status
+kubectl get ingress -n three-tier
+```
+
+### Step 11: Configure Domain (Optional)
+
+```shell
+# Get ALB DNS name
+kubectl get ingress mainlb -n three-tier
+
+# Add CNAME record in your DNS:
+# Name: todochallenge
+# Type: CNAME
+# Value: k8s-threetie-mainlb-xxxxx.us-west-2.elb.amazonaws.com
+```
+
+## DevOps Troubleshooting Guide
+
+### Common Issues & Solutions
+
+#### 1. ALB Not Getting Address
+```shell
+# Check controller logs
+kubectl logs -n kube-system deployment/aws-load-balancer-controller
+
+# Verify IAM permissions
+aws iam get-policy-version --policy-arn arn:aws:iam::ACCOUNT:policy/AWSLoadBalancerControllerIAMPolicy --version-id v1
+
+# Recreate service account if needed
+eksctl delete iamserviceaccount --cluster=three-tier-cluster --name=aws-load-balancer-controller --namespace=kube-system
+eksctl create iamserviceaccount --cluster=three-tier-cluster --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::ACCOUNT:policy/AWSLoadBalancerControllerIAMPolicy --approve
+```
+
+#### 2. Backend Using File Storage Instead of MongoDB
+```shell
+# Check backend logs
+kubectl logs deployment/api -n three-tier
+
+# Verify MongoDB secret
+kubectl get secret mongo-sec -n three-tier
+
+# Test MongoDB connection
+kubectl exec -it deployment/api -n three-tier -- nslookup mongodb-svc
+
+# Restart backend
+kubectl rollout restart deployment/api -n three-tier
+```
+
+#### 3. MongoDB Database Access
+```shell
+# Connect to MongoDB
+kubectl exec -it deployment/mongodb -n three-tier -- mongo
+
+# Inside MongoDB shell:
+show dbs
+use todo
+show collections
+db.tasks.find().pretty()
+```
+
+### Monitoring & Debugging Commands
+
+```shell
+# Check all resources
+kubectl get all -n three-tier
+
+# Describe problematic pods
+kubectl describe pod <POD_NAME> -n three-tier
+
+# Check events
+kubectl get events -n three-tier --sort-by='.lastTimestamp'
+
+# Port forward for local testing
+kubectl port-forward svc/frontend 3000:3000 -n three-tier
+kubectl port-forward svc/api 3500:3500 -n three-tier
+
+# Check ingress details
+kubectl describe ingress mainlb -n three-tier
+
+# View logs in real-time
+kubectl logs -f deployment/api -n three-tier
+kubectl logs -f deployment/frontend -n three-tier
+```
+
+### Performance & Scaling
+
+```shell
+# Scale deployments
+kubectl scale deployment api --replicas=3 -n three-tier
+kubectl scale deployment frontend --replicas=2 -n three-tier
+
+# Check resource usage
+kubectl top pods -n three-tier
+kubectl top nodes
+
+# Set resource limits (add to deployment manifests)
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+```
+
+### Security Best Practices
+
+```shell
+# Use secrets for sensitive data
+kubectl create secret generic app-secrets \
+  --from-literal=jwt-secret=your-jwt-secret \
+  --from-literal=api-key=your-api-key \
+  -n three-tier
+
+# Enable network policies
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: three-tier
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+# Scan images for vulnerabilities
+docker scan your-image:tag
 ```
 
 ### Cleanup
